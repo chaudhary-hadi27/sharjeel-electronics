@@ -1,13 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTheme } from "./ThemeProvider";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
+    const [theme, setTheme] = useState<"light" | "dark">("light");
+    const [mounted, setMounted] = useState(false);
+
+    // Initialize theme on client side only
+    useEffect(() => {
+        setMounted(true);
+        const savedTheme = (localStorage.getItem("theme") as "light" | "dark") || "light";
+        setTheme(savedTheme);
+
+        if (savedTheme === "dark") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === "light" ? "dark" : "light";
+        setTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        if (newTheme === "dark") {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    };
+
+    // Prevent hydration mismatch
+    if (!mounted) {
+        return null;
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-[#232f48]">
