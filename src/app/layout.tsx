@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AIChatButton from "@/components/AIChatButton";
 import PremiumTechLoader from "@/components/PremiumTechLoader";
-import { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { useState, useEffect } from "react";
 
 const inter = Inter({
@@ -16,17 +16,11 @@ const inter = Inter({
     display: "swap",
 });
 
-export default function RootLayout({
-                                       children,
-                                   }: {
-    children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Only show on first visit in session
         const hasVisited = sessionStorage.getItem('hasVisited');
-
         if (hasVisited === 'true') {
             setIsLoading(false);
         } else {
@@ -47,35 +41,23 @@ export default function RootLayout({
                 rel="stylesheet"
             />
 
-            {/* Prevent FOUC (Flash of Unstyled Content) */}
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                            (function() {
-                                try {
-                                    const theme = localStorage.getItem('theme') || 'light';
-                                    if (theme === 'dark') {
-                                        document.documentElement.classList.add('dark');
-                                    }
-                                } catch (e) {}
-                            })();
-                        `,
-                }}
-            />
-
             <title>Sharjeel Electronics | Premium Tech Store</title>
             <meta name="description" content="Pakistan's leading destination for high-end electronics" />
-
             <link rel="preconnect" href="https://images.unsplash.com" />
         </head>
-        <body className={`${inter.className} antialiased overflow-x-hidden bg-white dark:bg-[#101622]`}>
-        <ThemeProvider>
+        <body className={`${inter.className} antialiased overflow-x-hidden`}>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange={false}
+        >
             {/* Premium Store Entrance */}
             {isLoading && <PremiumTechLoader onComplete={() => setIsLoading(false)} />}
 
             {/* Main Content */}
             <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-                <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen">
+                <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
                     <Header />
                     {children}
                     <Footer />

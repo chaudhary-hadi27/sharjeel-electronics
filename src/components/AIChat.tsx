@@ -82,7 +82,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
     return (
         <>
             {/* Mobile: Full Screen Overlay */}
-            <div className="fixed inset-0 z-[200] md:hidden animate-fadeIn bg-white dark:bg-[#192233] flex flex-col">
+            <div className="fixed inset-0 z-[200] md:hidden animate-fadeIn bg-white dark:bg-[#192233] flex flex-col transition-colors duration-300">
                 {/* Header */}
                 <div className="bg-primary p-4 flex items-center justify-between shadow-lg">
                     <div className="flex items-center gap-3">
@@ -107,7 +107,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#101622]">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#101622] transition-colors duration-300">
                     {messages.map((msg, idx) => (
                         <div
                             key={idx}
@@ -118,7 +118,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                                     msg.role === "user"
                                         ? "bg-primary text-white"
                                         : "bg-white dark:bg-[#192233] text-slate-900 dark:text-white border border-slate-200 dark:border-[#232f48]"
-                                }`}
+                                } transition-colors duration-300`}
                             >
                                 <p className="text-sm leading-relaxed break-words">{msg.content}</p>
 
@@ -156,7 +156,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                     {/* Loading Indicator */}
                     {loading && (
                         <div className="flex justify-start animate-fadeIn">
-                            <div className="bg-white dark:bg-[#192233] rounded-2xl px-4 py-3 border border-slate-200 dark:border-[#232f48]">
+                            <div className="bg-white dark:bg-[#192233] rounded-2xl px-4 py-3 border border-slate-200 dark:border-[#232f48] transition-colors duration-300">
                                 <div className="loading-dots text-primary">
                                     <span></span>
                                     <span></span>
@@ -170,7 +170,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 </div>
 
                 {/* Input */}
-                <div className="p-4 bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48] safe-area-bottom">
+                <div className="p-4 bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48] safe-area-bottom transition-colors duration-300">
                     <div className="flex gap-2">
                         <input
                             type="text"
@@ -179,7 +179,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                             onKeyPress={handleKeyPress}
                             placeholder="Type your question..."
                             disabled={loading}
-                            className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none disabled:opacity-50"
+                            className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none disabled:opacity-50 transition-colors duration-300"
                         />
                         <button
                             onClick={handleSend}
@@ -200,7 +200,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
             {/* Desktop: Bottom Right Widget */}
             <div className="hidden md:block fixed bottom-24 right-4 lg:right-6 z-[200] w-full max-w-md animate-scaleIn">
-                <div className="bg-white dark:bg-[#192233] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#232f48] overflow-hidden flex flex-col h-[600px]">
+                <div className="bg-white dark:bg-[#192233] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#232f48] overflow-hidden flex flex-col h-[600px] transition-colors duration-300">
                     {/* Header */}
                     <div className="bg-primary p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -225,7 +225,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                     </div>
 
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#101622]">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#101622] transition-colors duration-300">
                         {messages.map((msg, idx) => (
                             <div
                                 key={idx}
@@ -236,7 +236,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                                         msg.role === "user"
                                             ? "bg-primary text-white"
                                             : "bg-white dark:bg-[#192233] text-slate-900 dark:text-white border border-slate-200 dark:border-[#232f48]"
-                                    }`}
+                                    } transition-colors duration-300`}
                                 >
                                     <p className="text-sm leading-relaxed">{msg.content}</p>
 
@@ -274,7 +274,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                         {/* Loading Indicator */}
                         {loading && (
                             <div className="flex justify-start animate-fadeIn">
-                                <div className="bg-white dark:bg-[#192233] rounded-2xl px-4 py-3 border border-slate-200 dark:border-[#232f48]">
+                                <div className="bg-white dark:bg-[#192233] rounded-2xl px-4 py-3 border border-slate-200 dark:border-[#232f48] transition-colors duration-300">
                                     <div className="loading-dots text-primary">
                                         <span></span>
                                         <span></span>
@@ -288,7 +288,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                     </div>
 
                     {/* Input */}
-                    <div className="p-4 bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48]">
+                    <div className="p-4 bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48] transition-colors duration-300">
                         <div className="flex gap-2">
                             <input
                                 type="text"
@@ -297,7 +297,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                                 onKeyPress={handleKeyPress}
                                 placeholder="Type your question..."
                                 disabled={loading}
-                                className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none disabled:opacity-50"
+                                className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none disabled:opacity-50 transition-colors duration-300"
                             />
                             <button
                                 onClick={handleSend}

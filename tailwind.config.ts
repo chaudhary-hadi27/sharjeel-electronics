@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    darkMode: "class", // ✅ This is CRITICAL
+    darkMode: "class", // ✅ Important for next-themes
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,8 +11,6 @@ const config: Config = {
         extend: {
             colors: {
                 primary: "#135bec",
-                "background-light": "#f6f6f8",
-                "background-dark": "#101622",
             },
         },
     },

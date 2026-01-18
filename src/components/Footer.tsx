@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+    const [mounted, setMounted] = useState(false);
+    const { theme, setTheme } = useTheme();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     return (
         <footer className="bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48] pt-8 sm:pt-12 lg:pt-16 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-20 transition-colors duration-200">
             <div className="max-w-[1440px] mx-auto">
@@ -30,9 +38,31 @@ export default function Footer() {
                             </Link>
                         </div>
 
-                        {/* Theme Toggle in Footer */}
-                        <div className="mt-6 flex justify-center sm:justify-start">
-                            <ThemeToggle variant="switch" showLabel />
+                        {/* Theme Toggle Switch in Footer */}
+                        <div className="mt-6 flex justify-center sm:justify-start items-center gap-3">
+                            <span className="text-sm font-medium text-slate-600 dark:text-[#92a4c9]">
+                                Theme
+                            </span>
+                            {mounted ? (
+                                <button
+                                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                                    className="flex items-center gap-3"
+                                >
+                                    <div className="relative w-14 h-7 bg-slate-200 dark:bg-slate-700 rounded-full transition-colors cursor-pointer">
+                                        <div
+                                            className={`absolute top-1 w-5 h-5 bg-white dark:bg-slate-900 rounded-full shadow-md transition-all duration-300 flex items-center justify-center ${
+                                                theme === 'dark' ? 'left-8' : 'left-1'
+                                            }`}
+                                        >
+                                            <span className="material-symbols-outlined text-xs text-slate-600 dark:text-amber-400">
+                                                {theme === 'light' ? 'light_mode' : 'dark_mode'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </button>
+                            ) : (
+                                <div className="w-14 h-7 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                            )}
                         </div>
                     </div>
 
