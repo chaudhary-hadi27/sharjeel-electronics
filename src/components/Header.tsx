@@ -1,34 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [theme, setTheme] = useState<"light" | "dark">("light");
-    const [mounted, setMounted] = useState(false);
-
-    // Initialize theme on mount
-    useEffect(() => {
-        const savedTheme = (localStorage.getItem("theme") as "light" | "dark") || "light";
-        setTheme(savedTheme);
-        setMounted(true);
-    }, []);
-
-    // Toggle theme function
-    const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-
-        // Apply theme to document
-        if (newTheme === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    };
+    const { theme, toggleTheme } = useTheme();
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#101622]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#232f48] transition-colors duration-200">
@@ -76,18 +55,22 @@ export default function Header() {
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
 
-                        {/* Theme Toggle - FIXED */}
-                        {mounted && (
-                            <button
-                                onClick={toggleTheme}
-                                className="p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110"
-                                aria-label="Toggle theme"
-                            >
-                                <span className="material-symbols-outlined text-2xl">
-                                    {theme === "light" ? "dark_mode" : "light_mode"}
-                                </span>
-                            </button>
-                        )}
+                        {/* Theme Toggle Button */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110 relative group"
+                            aria-label="Toggle theme"
+                            title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                        >
+                            <span className="material-symbols-outlined text-2xl">
+                                {theme === 'light' ? 'dark_mode' : 'light_mode'}
+                            </span>
+
+                            {/* Tooltip */}
+                            <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                {theme === 'light' ? 'Dark mode' : 'Light mode'}
+                            </span>
+                        </button>
 
                         {/* Cart */}
                         <Link href="/cart" className="relative p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110">

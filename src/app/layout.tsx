@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AIChatButton from "@/components/AIChatButton";
 import PremiumTechLoader from "@/components/PremiumTechLoader";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { useState, useEffect } from "react";
 
 const inter = Inter({
@@ -46,12 +47,13 @@ export default function RootLayout({
                 rel="stylesheet"
             />
 
+            {/* Prevent FOUC (Flash of Unstyled Content) */}
             <script
                 dangerouslySetInnerHTML={{
                     __html: `
                             (function() {
                                 try {
-                                    const theme = localStorage.getItem('theme');
+                                    const theme = localStorage.getItem('theme') || 'light';
                                     if (theme === 'dark') {
                                         document.documentElement.classList.add('dark');
                                     }
@@ -67,19 +69,20 @@ export default function RootLayout({
             <link rel="preconnect" href="https://images.unsplash.com" />
         </head>
         <body className={`${inter.className} antialiased overflow-x-hidden bg-white dark:bg-[#101622]`}>
+        <ThemeProvider>
+            {/* Premium Store Entrance */}
+            {isLoading && <PremiumTechLoader onComplete={() => setIsLoading(false)} />}
 
-        {/* Premium Store Entrance */}
-        {isLoading && <PremiumTechLoader onComplete={() => setIsLoading(false)} />}
-
-        {/* Main Content */}
-        <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-            <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen">
-                <Header />
-                {children}
-                <Footer />
-                <AIChatButton />
+            {/* Main Content */}
+            <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen">
+                    <Header />
+                    {children}
+                    <Footer />
+                    <AIChatButton />
+                </div>
             </div>
-        </div>
+        </ThemeProvider>
         </body>
         </html>
     );

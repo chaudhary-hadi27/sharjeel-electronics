@@ -1,5 +1,5 @@
 // ============================================
-// FILE: src/app/page.tsx - UPDATED WITH REUSABLE COMPONENTS
+// FILE: src/app/page.tsx - FULLY RESPONSIVE
 // ============================================
 "use client";
 
@@ -28,7 +28,7 @@ export default function Home() {
             rating: 5,
             reviews: 124,
             brand: "Apple",
-            viewCount: 847, // Subtle AI insight
+            viewCount: 847,
             matchPercentage: 94,
         },
         {
@@ -116,8 +116,8 @@ export default function Home() {
     ];
 
     return (
-        <main className="w-full">
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-20 py-8">
+        <main className="w-full bg-white dark:bg-[#101622] transition-colors duration-200">
+            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-20 py-4 sm:py-6 lg:py-8">
 
                 {/* ========== HERO SECTION ========== */}
                 <Hero
@@ -147,8 +147,8 @@ export default function Home() {
                 />
 
                 {/* ========== LATEST PRODUCTS GRID ========== */}
-                <section className="mb-12">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+                <section className="mb-8 sm:mb-12">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 transition-colors">
                         Latest Tech Deals
                     </h2>
                     <ProductGrid
