@@ -59,12 +59,12 @@ export default function ProductDetailPage() {
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-20 py-4 sm:py-6 lg:py-8">
 
                 {/* Breadcrumb */}
-                <div className="text-xs sm:text-sm text-slate-500 dark:text-[#92a4c9] mb-4 sm:mb-6 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                <div className="text-xs sm:text-sm text-slate-500 dark:text-[#92a4c9] mb-4 sm:mb-6 flex items-center gap-2 overflow-x-auto scrollbar-hide transition-colors">
                     <span className="whitespace-nowrap">Home</span>
                     <span className="material-symbols-outlined text-xs">chevron_right</span>
                     <span className="whitespace-nowrap">{product.category}</span>
                     <span className="material-symbols-outlined text-xs">chevron_right</span>
-                    <span className="text-slate-900 dark:text-white truncate">{product.name}</span>
+                    <span className="text-slate-900 dark:text-white truncate transition-colors">{product.name}</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
                     {/* Left: Images */}
                     <div className="order-1">
                         {/* Main Image */}
-                        <div className="aspect-square rounded-xl lg:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#192233] mb-3 sm:mb-4">
+                        <div className="aspect-square rounded-xl lg:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#192233] mb-3 sm:mb-4 transition-colors">
                             <img
                                 src={product.images[selectedImage]}
                                 alt={product.name}
@@ -109,7 +109,7 @@ export default function ProductDetailPage() {
 
                         {/* Title & Rating */}
                         <div>
-                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2 leading-tight transition-colors">
                                 {product.name}
                             </h1>
                             <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
@@ -124,7 +124,7 @@ export default function ProductDetailPage() {
                                             star
                                         </span>
                                     ))}
-                                    <span className="text-slate-600 dark:text-[#92a4c9] ml-2 text-xs sm:text-sm">
+                                    <span className="text-slate-600 dark:text-[#92a4c9] ml-2 text-xs sm:text-sm transition-colors">
                                         {product.rating} ({product.reviews} reviews)
                                     </span>
                                 </div>
@@ -132,17 +132,17 @@ export default function ProductDetailPage() {
                         </div>
 
                         {/* AI Insight Box */}
-                        <div className="bg-gradient-to-r from-primary/5 to-blue-500/5 border border-primary/20 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                        <div className="bg-gradient-to-r from-primary/5 to-blue-500/5 dark:from-primary/10 dark:to-blue-500/10 border border-primary/20 dark:border-primary/30 rounded-lg sm:rounded-xl p-3 sm:p-4 transition-colors">
                             <div className="flex items-start gap-2 sm:gap-3">
                                 <span className="material-symbols-outlined text-primary text-xl sm:text-2xl mt-0.5 sm:mt-1 shrink-0">stars</span>
                                 <div>
-                                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mb-1">
+                                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mb-1 transition-colors">
                                         AI Insight
                                     </h3>
-                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-[#92a4c9] leading-relaxed italic">
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-[#92a4c9] leading-relaxed italic transition-colors">
                                         {product.aiInsight}
                                     </p>
-                                    <div className="mt-2 sm:mt-3 flex items-center gap-2 text-[10px] sm:text-xs text-slate-500 dark:text-[#92a4c9]">
+                                    <div className="mt-2 sm:mt-3 flex items-center gap-2 text-[10px] sm:text-xs text-slate-500 dark:text-[#92a4c9] transition-colors">
                                         <span className="material-symbols-outlined text-xs sm:text-sm">visibility</span>
                                         {product.trendingViews} customers viewed this in last 24 hours
                                     </div>
@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
                                 Rs. {product.price.toLocaleString()}
                             </span>
                             {product.originalPrice && (
-                                <span className="text-lg sm:text-xl text-slate-400 dark:text-[#92a4c9] line-through">
+                                <span className="text-lg sm:text-xl text-slate-400 dark:text-[#92a4c9] line-through transition-colors">
                                     Rs. {product.originalPrice.toLocaleString()}
                                 </span>
                             )}
@@ -164,12 +164,12 @@ export default function ProductDetailPage() {
 
                         {/* Stock Status */}
                         {product.inStock ? (
-                            <div className="flex items-center gap-2 text-green-600 text-xs sm:text-sm font-bold">
+                            <div className="flex items-center gap-2 text-green-600 dark:text-green-400 text-xs sm:text-sm font-bold">
                                 <span className="material-symbols-outlined text-base sm:text-lg">check_circle</span>
                                 In Stock - Ready to Ship
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 text-red-600 text-xs sm:text-sm font-bold">
+                            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-xs sm:text-sm font-bold">
                                 <span className="material-symbols-outlined text-base sm:text-lg">cancel</span>
                                 Out of Stock
                             </div>
@@ -177,21 +177,21 @@ export default function ProductDetailPage() {
 
                         {/* Quantity & Add to Cart */}
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                            <div className="flex items-center border border-slate-200 dark:border-[#232f48] rounded-lg w-fit">
+                            <div className="flex items-center border border-slate-200 dark:border-[#232f48] rounded-lg w-fit transition-colors">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                     className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-slate-100 dark:hover:bg-[#232f48] transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-lg sm:text-xl">remove</span>
+                                    <span className="material-symbols-outlined text-lg sm:text-xl text-slate-900 dark:text-white">remove</span>
                                 </button>
-                                <span className="px-4 sm:px-6 py-2 sm:py-3 font-bold text-slate-900 dark:text-white min-w-[40px] text-center">
+                                <span className="px-4 sm:px-6 py-2 sm:py-3 font-bold text-slate-900 dark:text-white min-w-[40px] text-center transition-colors">
                                     {quantity}
                                 </span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
                                     className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-slate-100 dark:hover:bg-[#232f48] transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-lg sm:text-xl">add</span>
+                                    <span className="material-symbols-outlined text-lg sm:text-xl text-slate-900 dark:text-white">add</span>
                                 </button>
                             </div>
 
@@ -203,22 +203,22 @@ export default function ProductDetailPage() {
                                 </button>
 
                                 <button className="p-3 sm:p-4 border border-slate-200 dark:border-[#232f48] rounded-lg hover:bg-slate-100 dark:hover:bg-[#232f48] transition-colors shrink-0">
-                                    <span className="material-symbols-outlined text-lg sm:text-xl">favorite</span>
+                                    <span className="material-symbols-outlined text-lg sm:text-xl text-slate-900 dark:text-white">favorite</span>
                                 </button>
                             </div>
                         </div>
 
                         {/* Specs */}
-                        <div className="border border-slate-200 dark:border-[#232f48] rounded-lg sm:rounded-xl p-4 sm:p-6 space-y-2 sm:space-y-3">
-                            <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white mb-3 sm:mb-4">
+                        <div className="border border-slate-200 dark:border-[#232f48] rounded-lg sm:rounded-xl p-4 sm:p-6 space-y-2 sm:space-y-3 transition-colors">
+                            <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white mb-3 sm:mb-4 transition-colors">
                                 Specifications
                             </h3>
                             {Object.entries(product.specs).map(([key, value]) => (
-                                <div key={key} className="flex justify-between py-2 border-b border-slate-100 dark:border-[#232f48] last:border-0 gap-4">
-                                    <span className="text-slate-600 dark:text-[#92a4c9] text-xs sm:text-sm">
+                                <div key={key} className="flex justify-between py-2 border-b border-slate-100 dark:border-[#232f48] last:border-0 gap-4 transition-colors">
+                                    <span className="text-slate-600 dark:text-[#92a4c9] text-xs sm:text-sm transition-colors">
                                         {key}
                                     </span>
-                                    <span className="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm text-right">
+                                    <span className="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm text-right transition-colors">
                                         {value}
                                     </span>
                                 </div>
@@ -234,7 +234,7 @@ export default function ProductDetailPage() {
                         <span className="material-symbols-outlined text-primary text-xl sm:text-2xl animate-pulse">
                             auto_awesome
                         </span>
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white transition-colors">
                             AI Recommends
                         </h2>
                     </div>
@@ -245,7 +245,7 @@ export default function ProductDetailPage() {
                                 key={item.id}
                                 className="bg-white dark:bg-[#192233] rounded-lg sm:rounded-xl border border-slate-200 dark:border-[#232f48] overflow-hidden hover:shadow-xl transition-all group"
                             >
-                                <div className="aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                <div className="aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800 transition-colors">
                                     <img
                                         src={item.image}
                                         alt={item.name}
@@ -257,7 +257,7 @@ export default function ProductDetailPage() {
                                         <span className="material-symbols-outlined text-xs sm:text-sm">stars</span>
                                         {item.aiReason}
                                     </p>
-                                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mb-1 sm:mb-2 line-clamp-2">
+                                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mb-1 sm:mb-2 line-clamp-2 transition-colors">
                                         {item.name}
                                     </h3>
                                     <p className="text-primary font-bold text-sm sm:text-base lg:text-lg">

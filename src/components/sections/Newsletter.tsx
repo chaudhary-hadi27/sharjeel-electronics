@@ -37,9 +37,9 @@ export default function Newsletter({
     };
 
     return (
-        <section className="bg-primary rounded-2xl p-8 lg:p-12 text-white relative overflow-hidden mb-12">
+        <section className="bg-primary dark:bg-blue-700 rounded-2xl p-8 lg:p-12 text-white relative overflow-hidden mb-12 transition-colors duration-200">
             {/* Decorative Background */}
-            <div className="absolute -right-20 -bottom-20 size-80 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -right-20 -bottom-20 size-80 bg-white/10 dark:bg-white/5 rounded-full blur-3xl" />
 
             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                 {/* Text Content */}
@@ -47,7 +47,7 @@ export default function Newsletter({
                     <h3 className="text-3xl lg:text-4xl font-black mb-4">
                         {title}
                     </h3>
-                    <p className="text-white/80 text-lg">
+                    <p className="text-white/90 dark:text-white/80 text-lg">
                         {description}
                     </p>
                 </div>
@@ -55,7 +55,7 @@ export default function Newsletter({
                 {/* Form */}
                 <div className="w-full lg:w-auto shrink-0">
                     {success ? (
-                        <div className="bg-white/20 backdrop-blur rounded-lg px-6 py-4 flex items-center gap-3">
+                        <div className="bg-white/20 dark:bg-white/10 backdrop-blur rounded-lg px-6 py-4 flex items-center gap-3">
                             <span className="material-symbols-outlined text-2xl">check_circle</span>
                             <span className="font-bold">Successfully subscribed!</span>
                         </div>
@@ -70,13 +70,13 @@ export default function Newsletter({
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
                                 required
-                                className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
+                                className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-white/20 dark:border-slate-700"
                             />
                             <Button
                                 type="submit"
                                 variant="secondary"
                                 loading={loading}
-                                className="bg-slate-900 hover:bg-black text-white whitespace-nowrap"
+                                className="bg-slate-900 dark:bg-white hover:bg-black dark:hover:bg-slate-100 text-white dark:text-slate-900 whitespace-nowrap transition-colors"
                             >
                                 {buttonText}
                             </Button>

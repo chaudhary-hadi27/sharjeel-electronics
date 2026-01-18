@@ -21,9 +21,8 @@ interface ProductCardProps {
     discount?: string;
     inStock?: boolean;
     brand?: string;
-    // AI Features (Subtle)
-    viewCount?: number; // "847 customers viewed this"
-    matchPercentage?: number; // "94% match" but subtle
+    viewCount?: number;
+    matchPercentage?: number;
     trending?: boolean;
 }
 
@@ -46,9 +45,9 @@ export default function ProductCard({
                                     }: ProductCardProps) {
     return (
         <Link href={`/products/${id}`}>
-            <div className="group bg-white dark:bg-[#192233] rounded-xl border border-slate-200 dark:border-[#232f48] overflow-hidden hover:shadow-2xl hover:border-primary/50 transition-all">
+            <div className="group bg-white dark:bg-[#192233] rounded-xl border border-slate-200 dark:border-[#232f48] overflow-hidden hover:shadow-2xl hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300">
                 {/* Image Container */}
-                <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
+                <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800 transition-colors">
                     <img
                         src={image}
                         alt={name}
@@ -76,17 +75,17 @@ export default function ProductCard({
                         </div>
 
                         {/* Wishlist Button */}
-                        <button className="p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-full text-slate-400 hover:text-red-500 transition-colors">
+                        <button className="p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-full text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors">
                             <Icon name="favorite" size="sm" />
                         </button>
                     </div>
 
                     {/* Stock Status */}
                     {!inStock && (
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <span className="bg-white dark:bg-slate-900 px-4 py-2 rounded-lg font-bold text-sm text-slate-900 dark:text-white">
-                Out of Stock
-              </span>
+                        <div className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center">
+                            <span className="bg-white dark:bg-slate-900 px-4 py-2 rounded-lg font-bold text-sm text-slate-900 dark:text-white transition-colors">
+                                Out of Stock
+                            </span>
                         </div>
                     )}
                 </div>
@@ -95,13 +94,13 @@ export default function ProductCard({
                 <div className="p-4 space-y-2">
                     {/* Brand */}
                     {brand && (
-                        <p className="text-slate-500 dark:text-[#92a4c9] text-xs font-semibold uppercase tracking-wider">
+                        <p className="text-slate-500 dark:text-[#92a4c9] text-xs font-semibold uppercase tracking-wider transition-colors">
                             {brand}
                         </p>
                     )}
 
                     {/* Name */}
-                    <h3 className="text-slate-900 dark:text-white font-bold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="text-slate-900 dark:text-white font-bold text-sm leading-tight line-clamp-2 group-hover:text-primary dark:group-hover:text-primary transition-colors">
                         {name}
                     </h3>
 
@@ -119,15 +118,15 @@ export default function ProductCard({
                                     />
                                 ))}
                             </div>
-                            <span className="text-slate-400 dark:text-[#92a4c9] text-xs">
-                ({reviews})
-              </span>
+                            <span className="text-slate-400 dark:text-[#92a4c9] text-xs transition-colors">
+                                ({reviews})
+                            </span>
                         </div>
                     )}
 
                     {/* Subtle AI Insights */}
                     {viewCount && (
-                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-[#92a4c9]">
+                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-[#92a4c9] transition-colors">
                             <Icon name="visibility" size="xs" />
                             <span>{viewCount} viewed recently</span>
                         </div>
@@ -143,18 +142,18 @@ export default function ProductCard({
                     {/* Price */}
                     <div className="flex items-center justify-between pt-2">
                         <div className="flex flex-col">
-              <span className="text-primary font-black text-lg">
-                Rs. {price.toLocaleString()}
-              </span>
+                            <span className="text-primary dark:text-primary font-black text-lg">
+                                Rs. {price.toLocaleString()}
+                            </span>
                             {originalPrice && (
-                                <span className="text-slate-400 dark:text-[#92a4c9] text-xs line-through">
-                  Rs. {originalPrice.toLocaleString()}
-                </span>
+                                <span className="text-slate-400 dark:text-[#92a4c9] text-xs line-through transition-colors">
+                                    Rs. {originalPrice.toLocaleString()}
+                                </span>
                             )}
                         </div>
 
                         {/* Add to Cart */}
-                        <button className="p-2.5 bg-slate-100 dark:bg-[#232f48] hover:bg-primary dark:hover:bg-primary text-slate-900 dark:text-white hover:text-white rounded-lg transition-colors group-hover:scale-110">
+                        <button className="p-2.5 bg-slate-100 dark:bg-[#232f48] hover:bg-primary dark:hover:bg-primary text-slate-900 dark:text-white hover:text-white rounded-lg transition-all group-hover:scale-110">
                             <Icon name="add_shopping_cart" size="sm" />
                         </button>
                     </div>

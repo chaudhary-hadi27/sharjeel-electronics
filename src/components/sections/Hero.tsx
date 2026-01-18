@@ -35,7 +35,7 @@ export default function Hero({
             <div className="relative w-full rounded-xl overflow-hidden group">
                 <div className="aspect-[16/9] md:aspect-[21/9]">
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 dark:from-background-dark/95 via-slate-900/60 dark:via-background-dark/60 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 dark:from-black/95 via-slate-900/60 dark:via-black/60 to-transparent z-10 transition-colors duration-200" />
 
                     {/* Background Image */}
                     <img
@@ -62,7 +62,7 @@ export default function Hero({
                             )}
                         </h2>
 
-                        <p className="text-base lg:text-lg text-slate-300 mb-6 lg:mb-8 max-w-lg">
+                        <p className="text-base lg:text-lg text-slate-300 dark:text-slate-200 mb-6 lg:mb-8 max-w-lg transition-colors">
                             {description}
                         </p>
 
@@ -78,7 +78,7 @@ export default function Hero({
                                 variant="ghost"
                                 size="lg"
                                 onClick={onSecondaryClick}
-                                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-md"
+                                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border-white/20"
                             >
                                 {secondaryButtonText}
                             </Button>

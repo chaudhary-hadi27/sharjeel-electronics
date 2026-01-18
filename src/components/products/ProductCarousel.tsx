@@ -5,7 +5,6 @@
 
 import React, { useRef } from 'react';
 import ProductCard from './ProductCard';
-import Button from '../ui/Button';
 
 interface Product {
     id: number | string;
@@ -54,16 +53,16 @@ export default function ProductCarousel({
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 transition-colors">
                         {icon && (
                             <span className="material-symbols-outlined text-primary text-2xl">
-                {icon}
-              </span>
+                                {icon}
+                            </span>
                         )}
                         {title}
                     </h2>
                     {subtitle && (
-                        <p className="text-slate-500 dark:text-[#92a4c9] text-sm mt-1">
+                        <p className="text-slate-500 dark:text-[#92a4c9] text-sm mt-1 transition-colors">
                             {subtitle}
                         </p>
                     )}
@@ -74,13 +73,15 @@ export default function ProductCarousel({
                     <div className="hidden md:flex gap-2">
                         <button
                             onClick={() => scroll('left')}
-                            className="p-2 rounded-full border border-slate-200 dark:border-[#232f48] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-[#232f48] transition-colors"
+                            className="p-2 rounded-full border border-slate-200 dark:border-[#232f48] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-[#232f48] transition-all hover:scale-110"
+                            aria-label="Scroll left"
                         >
                             <span className="material-symbols-outlined">chevron_left</span>
                         </button>
                         <button
                             onClick={() => scroll('right')}
-                            className="p-2 rounded-full border border-slate-200 dark:border-[#232f48] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-[#232f48] transition-colors"
+                            className="p-2 rounded-full border border-slate-200 dark:border-[#232f48] text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-[#232f48] transition-all hover:scale-110"
+                            aria-label="Scroll right"
                         >
                             <span className="material-symbols-outlined">chevron_right</span>
                         </button>

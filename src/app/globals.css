@@ -3,11 +3,32 @@
 /* ========== THEME CONFIGURATION ========== */
 @theme {
     --color-primary: #135bec;
-    --color-background-light: #f6f6f8;
+    --color-background-light: #ffffff;
     --color-background-dark: #101622;
 }
 
+/* ========== ROOT VARIABLES ========== */
+:root {
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+    --primary: 19 91 236;
+    --primary-foreground: 255 255 255;
+    --border: 226 232 240;
+}
+
+.dark {
+    --background: 16 22 34;
+    --foreground: 241 245 249;
+    --border: 35 47 72;
+}
+
 /* ========== BASE STYLES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -16,6 +37,9 @@ body {
     font-family: Inter, system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ========== MATERIAL SYMBOLS ICONS ========== */
@@ -147,6 +171,24 @@ input[type="number"] {
     }
 }
 
+@keyframes float-slow {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes rotate-y {
+    0%, 100% {
+        transform: perspective(1000px) rotateY(-5deg);
+    }
+    50% {
+        transform: perspective(1000px) rotateY(5deg);
+    }
+}
+
 /* Apply animations */
 .animate-fadeIn {
     animation: fadeIn 0.3s ease-out;
@@ -166,6 +208,14 @@ input[type="number"] {
 
 .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-float-slow {
+    animation: float-slow 4s ease-in-out infinite;
+}
+
+.animate-rotate-y {
+    animation: rotate-y 6s ease-in-out infinite;
 }
 
 /* ========== SKELETON LOADING ========== */
@@ -243,8 +293,17 @@ input[type="number"] {
 }
 
 /* ========== SMOOTH COLOR TRANSITIONS ========== */
-* {
+.transition-colors {
     transition-property: color, background-color, border-color;
     transition-duration: 200ms;
     transition-timing-function: ease-in-out;
+}
+
+/* ========== LOADER SPECIFIC STYLES ========== */
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.rotate-y-12 {
+    transform: perspective(1000px) rotateY(12deg);
 }

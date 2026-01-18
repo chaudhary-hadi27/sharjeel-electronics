@@ -24,12 +24,12 @@ export default function Card({
                                  onClick,
                                  className = '',
                              }: CardProps) {
-    const baseStyles = 'rounded-xl transition-all';
+    const baseStyles = 'rounded-xl transition-all duration-300';
 
     const variants = {
         default: 'bg-white dark:bg-[#192233] border border-slate-200 dark:border-[#232f48]',
         bordered: 'bg-white dark:bg-[#192233] border-2 border-slate-300 dark:border-[#232f48]',
-        elevated: 'bg-white dark:bg-[#192233] shadow-xl',
+        elevated: 'bg-white dark:bg-[#192233] shadow-xl dark:shadow-2xl',
         flat: 'bg-slate-50 dark:bg-slate-900',
     };
 
@@ -40,7 +40,7 @@ export default function Card({
         lg: 'p-6 sm:p-8',
     };
 
-    const hoverStyles = hover ? 'hover:shadow-2xl hover:border-primary/50 hover:-translate-y-1' : '';
+    const hoverStyles = hover ? 'hover:shadow-2xl hover:border-primary/50 dark:hover:border-primary/50 hover:-translate-y-1' : '';
     const clickableStyles = clickable ? 'cursor-pointer active:scale-[0.98]' : '';
 
     return (

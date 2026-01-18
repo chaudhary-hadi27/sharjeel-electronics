@@ -18,8 +18,10 @@ const inter = Inter({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const hasVisited = sessionStorage.getItem('hasVisited');
         if (hasVisited === 'true') {
             setIsLoading(false);
@@ -48,22 +50,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className={`${inter.className} antialiased overflow-x-hidden`}>
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange={false}
+            defaultTheme="light"
+            enableSystem={false}
+            storageKey="sharjeel-theme"
         >
             {/* Premium Store Entrance */}
-            {isLoading && <PremiumTechLoader onComplete={() => setIsLoading(false)} />}
+            {isLoading && mounted && <PremiumTechLoader onComplete={() => setIsLoading(false)} />}
 
             {/* Main Content */}
-            <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-                <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
-                    <Header />
-                    {children}
-                    <Footer />
-                    <AIChatButton />
+            {mounted && (
+                <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="bg-white dark:bg-[#101622] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+                        <Header />
+                        {children}
+                        <Footer />
+                        <AIChatButton />
+                    </div>
                 </div>
-            </div>
+            )}
         </ThemeProvider>
         </body>
         </html>

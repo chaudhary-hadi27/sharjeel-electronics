@@ -1,5 +1,5 @@
 // ============================================
-// FILE: src/app/page.tsx - FULLY RESPONSIVE
+// FILE: src/app/page.tsx - FULLY RESPONSIVE WITH THEME
 // ============================================
 "use client";
 

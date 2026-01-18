@@ -35,11 +35,11 @@ export default function Button({
     const baseStyles = 'font-bold rounded-lg transition-all inline-flex items-center justify-center gap-2 active:scale-95';
 
     const variants = {
-        primary: 'bg-primary text-white hover:bg-blue-600 shadow-lg shadow-primary/25',
-        secondary: 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700',
-        outline: 'border-2 border-primary text-primary hover:bg-primary/5 dark:hover:bg-primary/10',
-        ghost: 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800',
-        danger: 'bg-red-600 text-white hover:bg-red-700',
+        primary: 'bg-primary text-white hover:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-primary/25',
+        secondary: 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors',
+        outline: 'border-2 border-primary text-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors',
+        ghost: 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
+        danger: 'bg-red-600 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600 transition-colors',
     };
 
     const sizes = {

@@ -36,12 +36,12 @@ export default function CategorySection({
     return (
         <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white transition-colors">
                     {title}
                 </h3>
                 <Link
                     href="/categories"
-                    className="text-primary font-semibold text-sm hover:underline"
+                    className="text-primary hover:text-blue-600 dark:hover:text-blue-400 font-semibold text-sm transition-colors"
                 >
                     View All
                 </Link>
@@ -58,19 +58,19 @@ export default function CategorySection({
                             padding="md"
                             hover
                             clickable
-                            className="flex flex-col items-center gap-4 text-center"
+                            className="flex flex-col items-center gap-4 text-center group"
                         >
-                            <div className="size-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <div className="size-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
                                 <Icon name={category.icon} size="xl" />
                             </div>
                             <div>
-                <span className="font-bold text-slate-900 dark:text-white block">
-                  {category.name}
-                </span>
+                                <span className="font-bold text-slate-900 dark:text-white block transition-colors">
+                                    {category.name}
+                                </span>
                                 {category.count && (
-                                    <span className="text-xs text-slate-500 dark:text-[#92a4c9] mt-1">
-                    {category.count} items
-                  </span>
+                                    <span className="text-xs text-slate-500 dark:text-[#92a4c9] mt-1 transition-colors">
+                                        {category.count} items
+                                    </span>
                                 )}
                             </div>
                         </Card>

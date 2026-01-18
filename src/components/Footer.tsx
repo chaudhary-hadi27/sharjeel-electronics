@@ -12,6 +12,12 @@ export default function Footer() {
         setMounted(true);
     }, []);
 
+    const toggleTheme = () => {
+        const newTheme = theme === "dark" ? "light" : "dark";
+        console.log("Footer: Switching theme from", theme, "to", newTheme); // Debug
+        setTheme(newTheme);
+    };
+
     return (
         <footer className="bg-white dark:bg-[#192233] border-t border-slate-200 dark:border-[#232f48] pt-8 sm:pt-12 lg:pt-16 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-20 transition-colors duration-200">
             <div className="max-w-[1440px] mx-auto">
@@ -38,15 +44,16 @@ export default function Footer() {
                             </Link>
                         </div>
 
-                        {/* Theme Toggle Switch in Footer */}
+                        {/* Theme Toggle Switch in Footer - FIXED */}
                         <div className="mt-6 flex justify-center sm:justify-start items-center gap-3">
                             <span className="text-sm font-medium text-slate-600 dark:text-[#92a4c9]">
                                 Theme
                             </span>
                             {mounted ? (
                                 <button
-                                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                                    className="flex items-center gap-3"
+                                    onClick={toggleTheme}
+                                    className="flex items-center gap-3 group"
+                                    aria-label="Toggle theme"
                                 >
                                     <div className="relative w-14 h-7 bg-slate-200 dark:bg-slate-700 rounded-full transition-colors cursor-pointer">
                                         <div
@@ -59,6 +66,9 @@ export default function Footer() {
                                             </span>
                                         </div>
                                     </div>
+                                    <span className="text-xs text-slate-500 dark:text-[#92a4c9] group-hover:text-primary transition-colors">
+                                        {theme === 'light' ? 'Light' : 'Dark'}
+                                    </span>
                                 </button>
                             ) : (
                                 <div className="w-14 h-7 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse" />

@@ -124,7 +124,7 @@ export default function PremiumTechLoader({ onComplete }: { onComplete?: () => v
                                 {/* Holographic Product - Phone */}
                                 <div className="relative group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all" />
-                                    <div className="relative bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl p-8 border border-white/10 shadow-2xl transform rotate-y-12 animate-rotate-y">
+                                    <div className="relative bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl p-8 border border-white/10 shadow-2xl rotate-y-12 animate-rotate-y">
                                         <div className="w-48 h-72 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-inner flex items-center justify-center">
                                             <span className="material-symbols-outlined text-white text-9xl fill-1">
                                                 smartphone
@@ -230,43 +230,6 @@ export default function PremiumTechLoader({ onComplete }: { onComplete?: () => v
             <div className="absolute bottom-8 right-8 text-white/20 text-xs font-light tracking-wider">
                 <p>EST. 2024</p>
             </div>
-
-            {/* CSS Animations */}
-            <style jsx>{`
-                @keyframes float-slow {
-                    0%, 100% {
-                        transform: translateY(0px);
-                    }
-                    50% {
-                        transform: translateY(-20px);
-                    }
-                }
-
-                @keyframes rotate-y {
-                    0%, 100% {
-                        transform: perspective(1000px) rotateY(-5deg);
-                    }
-                    50% {
-                        transform: perspective(1000px) rotateY(5deg);
-                    }
-                }
-
-                .animate-float-slow {
-                    animation: float-slow 4s ease-in-out infinite;
-                }
-
-                .animate-rotate-y {
-                    animation: rotate-y 6s ease-in-out infinite;
-                }
-
-                .perspective-1000 {
-                    perspective: 1000px;
-                }
-
-                .rotate-y-12 {
-                    transform: perspective(1000px) rotateY(12deg);
-                }
-            `}</style>
         </div>
     );
 }

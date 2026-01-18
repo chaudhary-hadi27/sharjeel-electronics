@@ -55,9 +55,9 @@ export default function ProductGrid({
             <div className={`grid ${columnClasses[columns]} ${gapClasses[gap]}`}>
                 {[...Array(8)].map((_, i) => (
                     <div key={i} className="animate-pulse">
-                        <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4"></div>
-                        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2"></div>
-                        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2"></div>
+                        <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4 transition-colors"></div>
+                        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2 transition-colors"></div>
+                        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2 transition-colors"></div>
                     </div>
                 ))}
             </div>
@@ -67,13 +67,13 @@ export default function ProductGrid({
     if (products.length === 0) {
         return (
             <div className="text-center py-20">
-        <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 mb-4">
-          inventory_2
-        </span>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 mb-4 transition-colors">
+                    inventory_2
+                </span>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">
                     No Products Found
                 </h3>
-                <p className="text-slate-500 dark:text-[#92a4c9]">
+                <p className="text-slate-500 dark:text-[#92a4c9] transition-colors">
                     Try adjusting your filters or search query
                 </p>
             </div>
