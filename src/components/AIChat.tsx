@@ -36,12 +36,15 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
         setLoading(true);
 
         try {
-            // TODO: API call to AI endpoint
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userMessage }),
             });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -54,11 +57,12 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 },
             ]);
         } catch (error) {
+            console.error("Chat error:", error);
             setMessages((prev) => [
                 ...prev,
                 {
                     role: "assistant",
-                    content: "Network error! Please try again.",
+                    content: "Network error! Please check your internet and try again.",
                 },
             ]);
         } finally {
@@ -76,22 +80,26 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed bottom-24 right-6 z-[200] w-full max-w-md">
+        <div className="fixed bottom-24 right-6 z-[200] w-full max-w-md animate-scaleIn">
             <div className="bg-white dark:bg-[#192233] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#232f48] overflow-hidden flex flex-col h-[600px]">
                 {/* Header */}
                 <div className="bg-primary p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="size-10 rounded-full bg-white/20 flex items-center justify-center">
-                            <span className="material-symbols-outlined text-white">auto_awesome</span>
+                            <span className="material-symbols-outlined text-white animate-pulse">auto_awesome</span>
                         </div>
                         <div>
                             <h3 className="text-white font-bold text-sm">AI Shopping Assistant</h3>
-                            <p className="text-white/80 text-xs">Online • Ready to help</p>
+                            <p className="text-white/80 text-xs flex items-center gap-1">
+                                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                Online • Ready to help
+                            </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:text-white transition-colors hover:scale-110"
+                        aria-label="Close chat"
                     >
                         <span className="material-symbols-outlined">close</span>
                     </button>
@@ -102,7 +110,7 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                     {messages.map((msg, idx) => (
                         <div
                             key={idx}
-                            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-slideUp`}
                         >
                             <div
                                 className={`max-w-[80%] rounded-2xl px-4 py-3 ${
@@ -113,28 +121,30 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                             >
                                 <p className="text-sm leading-relaxed">{msg.content}</p>
 
-                                {/* Product Cards (if AI suggests products) */}
+                                {/* Product Cards */}
                                 {msg.products && msg.products.length > 0 && (
                                     <div className="mt-3 space-y-2">
                                         {msg.products.map((product) => (
-                                            <div
+                                            <a
                                                 key={product.id}
-                                                className="bg-slate-50 dark:bg-[#232f48] rounded-lg p-3 flex gap-3"
+                                                href={`/products/${product.id}`}
+                                                className="bg-slate-50 dark:bg-[#232f48] rounded-lg p-3 flex gap-3 hover:bg-slate-100 dark:hover:bg-[#2d3b5a] transition-colors"
                                             >
                                                 <img
                                                     src={product.image}
                                                     alt={product.name}
                                                     className="w-16 h-16 rounded object-cover"
+                                                    loading="lazy"
                                                 />
                                                 <div className="flex-1">
-                                                    <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                                                    <h4 className="font-bold text-xs text-slate-900 dark:text-white line-clamp-2">
                                                         {product.name}
                                                     </h4>
                                                     <p className="text-primary font-bold text-sm">
                                                         Rs. {product.price.toLocaleString()}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </a>
                                         ))}
                                     </div>
                                 )}
@@ -142,13 +152,14 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                         </div>
                     ))}
 
+                    {/* Loading Indicator */}
                     {loading && (
-                        <div className="flex justify-start">
+                        <div className="flex justify-start animate-fadeIn">
                             <div className="bg-white dark:bg-[#192233] rounded-2xl px-4 py-3 border border-slate-200 dark:border-[#232f48]">
-                                <div className="flex gap-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                <div className="loading-dots text-primary">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
                                 </div>
                             </div>
                         </div>
@@ -166,16 +177,23 @@ export default function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: 
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Type your question..."
-                            className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none"
+                            disabled={loading}
+                            className="flex-1 bg-slate-100 dark:bg-[#232f48] border-none rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] focus:ring-2 focus:ring-primary outline-none disabled:opacity-50"
                         />
                         <button
                             onClick={handleSend}
                             disabled={loading || !input.trim()}
-                            className="bg-primary text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="bg-primary text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                            aria-label="Send message"
                         >
-                            <span className="material-symbols-outlined">send</span>
+                            <span className="material-symbols-outlined">
+                                {loading ? "progress_activity" : "send"}
+                            </span>
                         </button>
                     </div>
+                    <p className="text-xs text-slate-400 dark:text-[#92a4c9] mt-2 text-center">
+                        Powered by AI • Responds in Roman Urdu
+                    </p>
                 </div>
             </div>
         </div>

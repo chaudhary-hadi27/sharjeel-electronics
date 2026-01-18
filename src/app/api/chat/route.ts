@@ -1,7 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Mock product database (Later Supabase se replace hoga)
-const PRODUCTS = [
+// ========== CONSTANTS ==========
+const MAX_MESSAGE_LENGTH = 500;
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10;
+
+// Simple in-memory rate limiting (use Redis in production)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+
+// ========== TYPES ==========
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    category: string;
+    image: string;
+    specs: string;
+}
+
+// ========== MOCK DATABASE (Later Supabase) ==========
+const PRODUCTS: Product[] = [
     {
         id: 1,
         name: "iPhone 15 Pro Max",
@@ -44,43 +62,143 @@ const PRODUCTS = [
     },
 ];
 
-// Simple keyword matching for product filtering
-function findRelevantProducts(query: string) {
-    const lowerQuery = query.toLowerCase();
-
-    // Extract budget from query
-    const budgetMatch = lowerQuery.match(/(\d+)k|under (\d+)|(\d+) tak/);
-    const budget = budgetMatch ? parseInt(budgetMatch[1] || budgetMatch[2] || budgetMatch[3]) * 1000 : null;
-
-    let relevant = PRODUCTS;
-
-    // Filter by budget
-    if (budget) {
-        relevant = relevant.filter((p) => p.price <= budget);
-    }
-
-    // Filter by category keywords
-    if (lowerQuery.includes("phone") || lowerQuery.includes("mobile")) {
-        relevant = relevant.filter((p) => p.category === "Smartphones");
-    } else if (lowerQuery.includes("laptop") || lowerQuery.includes("computer")) {
-        relevant = relevant.filter((p) => p.category === "Laptops");
-    } else if (lowerQuery.includes("airpod") || lowerQuery.includes("earphone") || lowerQuery.includes("headphone")) {
-        relevant = relevant.filter((p) => p.category === "Accessories");
-    } else if (lowerQuery.includes("watch") || lowerQuery.includes("smartwatch")) {
-        relevant = relevant.filter((p) => p.category === "Wearables");
-    }
-
-    return relevant.slice(0, 3); // Top 3 products
+// ========== VALIDATION & SECURITY ==========
+function sanitizeMessage(message: string): string {
+    return message
+        .trim()
+        .replace(/<script[^>]*>.*?<\/script>/gi, '')
+        .replace(/<[^>]+>/g, '')
+        .slice(0, MAX_MESSAGE_LENGTH);
 }
 
-// ========== AI API CALLS ==========
+function checkRateLimit(ip: string): boolean {
+    const now = Date.now();
+    const userLimit = rateLimitMap.get(ip);
 
-// 1. Groq API (Primary - Fastest)
-async function callGroq(message: string, products: typeof PRODUCTS) {
-    try {
-        // Check if API key exists
+    if (!userLimit || now > userLimit.resetTime) {
+        rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+        return true;
+    }
+
+    if (userLimit.count >= RATE_LIMIT_MAX_REQUESTS) {
+        return false;
+    }
+
+    userLimit.count++;
+    return true;
+}
+
+// ========== ENHANCED PRODUCT FILTERING ==========
+class ProductService {
+    static findRelevant(query: string): Product[] {
+        const lowerQuery = query.toLowerCase();
+
+        // Enhanced budget extraction
+        const budget = this.extractBudget(lowerQuery);
+
+        // Enhanced category matching with synonyms
+        const category = this.detectCategory(lowerQuery);
+
+        let relevant = PRODUCTS;
+
+        if (budget) {
+            relevant = relevant.filter(p => p.price <= budget);
+        }
+
+        if (category) {
+            relevant = relevant.filter(p => p.category === category);
+        }
+
+        return relevant.slice(0, 3);
+    }
+
+    private static extractBudget(query: string): number | null {
+        // Match: "100k", "under 100000", "100 tak", "1 lac", "1 lakh"
+        const patterns = [
+            { regex: /(\d+)\s*k\b/i, multiplier: 1000 },
+            { regex: /under\s+(\d+)/i, multiplier: 1 },
+            { regex: /(\d+)\s+tak/i, multiplier: 1 },
+            { regex: /(\d+)\s*(lac|lakh)/i, multiplier: 100000 },
+        ];
+
+        for (const { regex, multiplier } of patterns) {
+            const match = query.match(regex);
+            if (match) {
+                return parseInt(match[1]) * multiplier;
+            }
+        }
+
+        return null;
+    }
+
+    private static detectCategory(query: string): string | null {
+        const categoryMap: Record<string, string[]> = {
+            Smartphones: ['phone', 'mobile', 'smartphone', 'iphone', 'samsung', 'fone', 'cell'],
+            Laptops: ['laptop', 'computer', 'macbook', 'notebook', 'pc'],
+            Accessories: ['airpod', 'earphone', 'headphone', 'buds', 'earbuds'],
+            Wearables: ['watch', 'smartwatch', 'wearable', 'fitness'],
+        };
+
+        for (const [category, keywords] of Object.entries(categoryMap)) {
+            if (keywords.some(kw => query.includes(kw))) {
+                return category;
+            }
+        }
+
+        return null;
+    }
+}
+
+// ========== AI SERVICE WITH TIMEOUT & VALIDATION ==========
+class AIService {
+    private static async callWithTimeout(
+        fn: () => Promise<string>,
+        timeout = 10000
+    ): Promise<string> {
+        return Promise.race([
+            fn(),
+            new Promise<string>((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout')), timeout)
+            ),
+        ]);
+    }
+
+    private static validateRomanUrdu(text: string): boolean {
+        // Check if response is not in Urdu script
+        const urduRegex = /[\u0600-\u06FF]/;
+        return !urduRegex.test(text) && text.length > 0;
+    }
+
+    static async getResponse(message: string, products: Product[]): Promise<string> {
+        const providers = [
+            { name: 'Groq', fn: () => this.callGroq(message, products) },
+            { name: 'Gemini', fn: () => this.callGemini(message, products) },
+            { name: 'Cohere', fn: () => this.callCohere(message, products) },
+        ];
+
+        for (const provider of providers) {
+            try {
+                console.log(`🚀 Trying ${provider.name}...`);
+                const response = await this.callWithTimeout(provider.fn);
+
+                if (!this.validateRomanUrdu(response)) {
+                    console.warn(`${provider.name} returned invalid format`);
+                    continue;
+                }
+
+                console.log(`✅ ${provider.name} succeeded!`);
+                return response;
+            } catch (error) {
+                console.error(`❌ ${provider.name} failed:`, error);
+            }
+        }
+
+        return "Maaf kijiye, abhi system mein thori issue hai. Thori der baad try karein.";
+    }
+
+    private static async callGroq(message: string, products: Product[]): Promise<string> {
         if (!process.env.GROQ_API_KEY) {
-            throw new Error("GROQ_API_KEY not found in environment variables");
+            throw new Error("GROQ_API_KEY missing");
         }
 
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -94,13 +212,14 @@ async function callGroq(message: string, products: typeof PRODUCTS) {
                 messages: [
                     {
                         role: "system",
-                        content: `You are a helpful shopping assistant for a Pakistani mobile and electronics store.
+                        content: `You are a helpful shopping assistant for a Pakistani electronics store.
 
 CRITICAL RULES:
 - ALWAYS respond in Roman Urdu (Urdu written in English alphabet)
+- NEVER use Urdu script (اردو)
 - Be natural, friendly, and conversational
-- Don't oversell - be honest and helpful
 - Keep responses concise (2-3 sentences max)
+- Don't oversell - be honest
 
 Available Products:
 ${JSON.stringify(products, null, 2)}
@@ -108,15 +227,9 @@ ${JSON.stringify(products, null, 2)}
 Example responses:
 - "Ye phone gaming k liye bohat acha hai, Snapdragon processor hai"
 - "Aapke budget mein ye best option hai"
-- "Is ki battery timing bohot achi hai, 2 din asani se chal jati hai"
-
-Customer's location: Lahore, Pakistan
-Currency: Pakistani Rupees (Rs.)`,
+- "Is ki battery timing bohot achi hai, 2 din asani se chal jati hai"`,
                     },
-                    {
-                        role: "user",
-                        content: message,
-                    },
+                    { role: "user", content: message },
                 ],
                 temperature: 0.7,
                 max_tokens: 200,
@@ -124,45 +237,32 @@ Currency: Pakistani Rupees (Rs.)`,
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error("Groq Error Details:", errorData);
-            throw new Error(`Groq API failed: ${response.status} - ${JSON.stringify(errorData)}`);
+            throw new Error(`Groq failed: ${response.status}`);
         }
 
         const data = await response.json();
         return data.choices[0].message.content;
-    } catch (error) {
-        console.error("Groq API Error:", error);
-        throw error;
     }
-}
 
-// 2. Gemini API (Backup)
-async function callGemini(message: string, products: typeof PRODUCTS) {
-    try {
-        // Check if API key exists
+    private static async callGemini(message: string, products: Product[]): Promise<string> {
         if (!process.env.GEMINI_API_KEY) {
-            throw new Error("GEMINI_API_KEY not found in environment variables");
+            throw new Error("GEMINI_API_KEY missing");
         }
 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
         const response = await fetch(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [
-                            {
-                                text: `You are a helpful shopping assistant for a Pakistani electronics store.
+                contents: [{
+                    parts: [{
+                        text: `You are a helpful shopping assistant for a Pakistani electronics store.
 
 CRITICAL RULES:
 - ALWAYS respond in Roman Urdu (Urdu written in English alphabet)
-- Be natural, friendly, and conversational
-- Don't oversell - be honest
+- NEVER use Urdu script
+- Be natural and helpful
 - Keep responses short (2-3 sentences)
 
 Available Products:
@@ -171,10 +271,8 @@ ${JSON.stringify(products, null, 2)}
 Customer message: ${message}
 
 Respond in Roman Urdu:`,
-                            },
-                        ],
-                    },
-                ],
+                    }],
+                }],
                 generationConfig: {
                     temperature: 0.7,
                     maxOutputTokens: 200,
@@ -183,22 +281,18 @@ Respond in Roman Urdu:`,
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error("Gemini Error Details:", errorData);
-            throw new Error(`Gemini API failed: ${response.status} - ${JSON.stringify(errorData)}`);
+            throw new Error(`Gemini failed: ${response.status}`);
         }
 
         const data = await response.json();
         return data.candidates[0].content.parts[0].text;
-    } catch (error) {
-        console.error("Gemini API Error:", error);
-        throw error;
     }
-}
 
-// 3. Cohere API (Final Fallback)
-async function callCohere(message: string, products: typeof PRODUCTS) {
-    try {
+    private static async callCohere(message: string, products: Product[]): Promise<string> {
+        if (!process.env.COHERE_API_KEY) {
+            throw new Error("COHERE_API_KEY missing");
+        }
+
         const response = await fetch("https://api.cohere.ai/v1/chat", {
             method: "POST",
             headers: {
@@ -218,75 +312,57 @@ Be helpful and natural.`,
         });
 
         if (!response.ok) {
-            throw new Error(`Cohere API failed: ${response.status}`);
+            throw new Error(`Cohere failed: ${response.status}`);
         }
 
         const data = await response.json();
         return data.text;
-    } catch (error) {
-        console.error("Cohere API Error:", error);
-        throw error;
     }
-}
-
-// ========== MULTI-AI FALLBACK SYSTEM ==========
-async function getAIResponse(message: string, products: typeof PRODUCTS): Promise<string> {
-    // Try 1: Groq (Fastest)
-    try {
-        console.log("🚀 Trying Groq API...");
-        const response = await callGroq(message, products);
-        console.log("✅ Groq succeeded!");
-        return response;
-    } catch (error) {
-        console.log("❌ Groq failed, trying Gemini...");
-    }
-
-    // Try 2: Gemini (Backup)
-    try {
-        console.log("🚀 Trying Gemini API...");
-        const response = await callGemini(message, products);
-        console.log("✅ Gemini succeeded!");
-        return response;
-    } catch (error) {
-        console.log("❌ Gemini failed, trying Cohere...");
-    }
-
-    // Try 3: Cohere (Final Fallback)
-    try {
-        console.log("🚀 Trying Cohere API...");
-        const response = await callCohere(message, products);
-        console.log("✅ Cohere succeeded!");
-        return response;
-    } catch (error) {
-        console.log("❌ All AI APIs failed!");
-    }
-
-    // Fallback: Manual response if all APIs fail
-    return "Maaf kijiye, abhi system mein thori issue hai. Please thori der baad try karein.";
 }
 
 // ========== MAIN API ROUTE ==========
 export async function POST(req: NextRequest) {
     try {
+        // Rate limiting
+        const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+        if (!checkRateLimit(ip)) {
+            return NextResponse.json(
+                {
+                    error: "Too many requests",
+                    reply: "Thora wait karein. Zyada requests bhej rahe hain."
+                },
+                { status: 429 }
+            );
+        }
+
         const { message } = await req.json();
 
-        if (!message || message.trim().length === 0) {
+        // Validation
+        if (!message || typeof message !== 'string') {
             return NextResponse.json(
                 { error: "Message is required" },
                 { status: 400 }
             );
         }
 
-        console.log("📨 User message:", message);
+        if (message.length > MAX_MESSAGE_LENGTH) {
+            return NextResponse.json(
+                { error: "Message too long" },
+                { status: 400 }
+            );
+        }
 
-        // Find relevant products based on query
-        const relevantProducts = findRelevantProducts(message);
+        // Sanitize input
+        const cleanMessage = sanitizeMessage(message);
+        console.log("📨 User message:", cleanMessage);
+
+        // Find products
+        const relevantProducts = ProductService.findRelevant(cleanMessage);
         console.log(`🔍 Found ${relevantProducts.length} relevant products`);
 
-        // Get AI response with multi-fallback
-        const aiReply = await getAIResponse(message, relevantProducts);
+        // Get AI response
+        const aiReply = await AIService.getResponse(cleanMessage, relevantProducts);
 
-        // Return response with products
         return NextResponse.json({
             reply: aiReply,
             products: relevantProducts,
@@ -302,4 +378,17 @@ export async function POST(req: NextRequest) {
             { status: 500 }
         );
     }
+}
+
+// ========== STARTUP VALIDATION ==========
+const AVAILABLE_PROVIDERS = {
+    groq: !!process.env.GROQ_API_KEY,
+    gemini: !!process.env.GEMINI_API_KEY,
+    cohere: !!process.env.COHERE_API_KEY,
+};
+
+console.log('🔑 Available AI providers:', AVAILABLE_PROVIDERS);
+
+if (!Object.values(AVAILABLE_PROVIDERS).some(Boolean)) {
+    console.error('⚠️ WARNING: No AI API keys found! Chat will not work.');
 }

@@ -1,6 +1,3 @@
-// ============================================
-// FILE: src/components/Header.tsx (FIXED)
-// ============================================
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,7 +9,7 @@ export default function Header() {
     const [theme, setTheme] = useState<"light" | "dark">("light");
     const [mounted, setMounted] = useState(false);
 
-    // Initialize theme from localStorage
+    // Initialize theme on mount
     useEffect(() => {
         const savedTheme = (localStorage.getItem("theme") as "light" | "dark") || "light";
         setTheme(savedTheme);
@@ -33,17 +30,14 @@ export default function Header() {
         }
     };
 
-    // Prevent hydration mismatch
-    if (!mounted) return null;
-
     return (
-        <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#101622]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#232f48]">
+        <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#101622]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#232f48] transition-colors duration-200">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-20 py-3">
                 <div className="flex items-center justify-between gap-8">
 
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white shrink-0">
-                        <div className="text-primary">
+                    <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white shrink-0 group">
+                        <div className="text-primary group-hover:scale-110 transition-transform">
                             <span className="material-symbols-outlined text-3xl">bolt</span>
                         </div>
                         <h2 className="text-lg font-bold tracking-tight">
@@ -52,7 +46,7 @@ export default function Header() {
                     </Link>
 
                     {/* Search Bar */}
-                    <div className="hidden md:flex items-center bg-slate-100 dark:bg-[#232f48] rounded-lg px-3 py-2 flex-1 max-w-lg">
+                    <div className="hidden md:flex items-center bg-slate-100 dark:bg-[#232f48] rounded-lg px-3 py-2 flex-1 max-w-lg transition-colors">
                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92a4c9]">search</span>
                         <input
                             type="text"
@@ -82,27 +76,29 @@ export default function Header() {
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
 
-                        {/* Theme Toggle - WORKING */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-colors"
-                            aria-label="Toggle theme"
-                        >
-                            <span className="material-symbols-outlined text-2xl">
-                                {theme === "light" ? "dark_mode" : "light_mode"}
-                            </span>
-                        </button>
+                        {/* Theme Toggle - FIXED */}
+                        {mounted && (
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110"
+                                aria-label="Toggle theme"
+                            >
+                                <span className="material-symbols-outlined text-2xl">
+                                    {theme === "light" ? "dark_mode" : "light_mode"}
+                                </span>
+                            </button>
+                        )}
 
                         {/* Cart */}
-                        <button className="relative p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-colors">
+                        <Link href="/cart" className="relative p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110">
                             <span className="material-symbols-outlined text-2xl">shopping_cart</span>
-                            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-white font-bold">
+                            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-white font-bold animate-pulse">
                                 3
                             </span>
-                        </button>
+                        </Link>
 
                         {/* Favorites */}
-                        <button className="hidden sm:block p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-colors">
+                        <button className="hidden sm:block p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-all hover:scale-110">
                             <span className="material-symbols-outlined text-2xl">favorite</span>
                         </button>
 
@@ -115,7 +111,8 @@ export default function Header() {
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="lg:hidden p-2 text-slate-600 dark:text-[#92a4c9]"
+                            className="lg:hidden p-2 text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors"
+                            aria-label="Toggle menu"
                         >
                             <span className="material-symbols-outlined">
                                 {mobileMenuOpen ? "close" : "menu"}
@@ -126,32 +123,32 @@ export default function Header() {
 
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
-                    <div className="lg:hidden mt-4 pb-4 border-t border-slate-200 dark:border-[#232f48] pt-4">
+                    <div className="lg:hidden mt-4 pb-4 border-t border-slate-200 dark:border-[#232f48] pt-4 animate-fadeIn">
                         <nav className="flex flex-col gap-3">
                             <Link
                                 href="/laptops"
-                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors"
+                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors px-2 py-2 rounded hover:bg-slate-100 dark:hover:bg-[#232f48]"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Laptops
                             </Link>
                             <Link
                                 href="/smartphones"
-                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors"
+                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors px-2 py-2 rounded hover:bg-slate-100 dark:hover:bg-[#232f48]"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Smartphones
                             </Link>
                             <Link
                                 href="/appliances"
-                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors"
+                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors px-2 py-2 rounded hover:bg-slate-100 dark:hover:bg-[#232f48]"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Appliances
                             </Link>
                             <Link
                                 href="/flash-sales"
-                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors"
+                                className="text-sm font-medium text-slate-600 dark:text-[#92a4c9] hover:text-primary transition-colors px-2 py-2 rounded hover:bg-slate-100 dark:hover:bg-[#232f48]"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Flash Sales
